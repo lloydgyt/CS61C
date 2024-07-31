@@ -20,22 +20,12 @@ void set_bit(unsigned * x,
 	// use OR to set bit to v
 	// other bits should remain the same
 	// x | 00..010..00
-	//
-		// (not helpful)
-		// if v == 0, then flip x then set bit to 1 and then flip back
-		// if v == 1, simply set bit to 1
-		// the key is how to directly use v
-		// and not using v as a condition!
-	//
-	v = v << n;
-	unsigned mask_left = ~(-1 << n);
-	unsigned x_left = *x & mask_left;
-
-	unsigned mask_right = -1 << (n + 1);
-	unsigned x_right = *x & mask_right;
-	v = v | x_left;
-	v = v | x_right;
-	*x = v;
+	unsigned mask = (1 << n);
+	// set bit to 1
+	*x = *x | mask;
+	// AND it will 111..0..111
+	*x = *x & (~(v << n));
+	flip_bit(x, n);
 }
 
 // the code below effectively set nth bit to 1
