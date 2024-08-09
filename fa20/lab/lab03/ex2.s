@@ -30,7 +30,7 @@ fun:
 
 main:
     # BEGIN PROLOGUE
-    addi sp, sp, -20
+    addi sp, sp, -20 // store the registers because `main` will use them
     sw s0, 0(sp)
     sw s1, 4(sp)
     sw s2, 8(sp)
@@ -42,19 +42,23 @@ main:
     la s1, source
     la s2, dest
 loop:
-    slli s3, t0, 2
-    add t1, s1, s3
-    lw t2, 0(t1)
+    slli s3, t0, 2 # s3 = 4 * t0; offset from base addr
+    add t1, s1, s3 # calculate the addr of specified index
+    lw t2, 0(t1) # t2 = source[t0], used for condition
+
     beq t2, x0, exit
-    add a0, x0, t2
+    add a0, x0, t2 # t2 is also used as argument
+
+		# fun(args);
     addi sp, sp, -8
-    sw t0, 0(sp)
+    sw t0, 0(sp) # save t* since it's not guarranteed to be preserved
     sw t2, 4(sp)
     jal fun
     lw t0, 0(sp)
     lw t2, 4(sp)
     addi sp, sp, 8
-    add t2, x0, a0
+
+    add t2, x0, a0 # t2 = fun(source[k]);
     add t3, s2, s3
     sw t2, 0(t3)
     add s0, s0, t2
